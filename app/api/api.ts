@@ -62,9 +62,10 @@ export class Api {
   }
 
   async getNonce(address: string) {
-    const { data } = await axios.get(urljoin(this.baseUrl, `/v2/accounts/${address}`), {
-      params: { unanchored: true },
-    });
+    const { data } = await axios.get(
+      urljoin(this.baseUrl, `extended/v1/address/${address}/nonces`),
+      { params: { unanchored: true } }
+    );
     return data;
   }
 
@@ -135,8 +136,8 @@ export class Api {
 
   async getMempoolTransactions(address: string): Promise<MempoolTransaction[]> {
     const mempoolTxs = await axios.get(
-      urljoin(this.baseUrl, `/extended/v1/tx/mempool?limit=200&address=${address}`)
-      // { params: { unanchored: true } }
+      urljoin(this.baseUrl, `/extended/v1/tx/mempool?limit=200&address=${address}`),
+      { params: { unanchored: true } }
     );
     return mempoolTxs.data.results;
   }

@@ -136,8 +136,7 @@ export const TransactionListItem: FC<TransactionListItemProps> = props => {
     txid: tx.tx_id,
     recipientAddress: getRecipientAddress(tx) || '',
     memo: memo || '',
-    date: '2342',
-    // date: txDate && txDate.toISOString(),
+    date: txDate instanceof Date ? txDate.toISOString() : '',
     txDetails: JSON.stringify(tx, null, 2),
     explorerLink: makeExplorerTxLink(tx.tx_id),
   });
