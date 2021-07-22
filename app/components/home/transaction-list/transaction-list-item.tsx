@@ -57,6 +57,8 @@ export const TransactionListItem: FC<TransactionListItemProps> = props => {
     txWithEvents.stx_received
   );
 
+  const inMicroblock = tx.is_unanchored;
+
   const txFailed =
     tx.tx_status === 'abort_by_response' || tx.tx_status === 'abort_by_post_condition';
 
@@ -113,7 +115,7 @@ export const TransactionListItem: FC<TransactionListItemProps> = props => {
       tx.token_transfer.memo.replace('0x', '').replace(/^(0{2})+|(0{2})+$/g, ''),
       'hex'
     ).toString('utf8');
-  const txDate = new Date(tx.burn_block_time_iso);
+  const txDate = new Date(tx.burn_block_time_iso || tx.parent_burn_block_time_iso);
   const txDateShort = txDate.toLocaleString();
 
   const containerRef = useRef<HTMLButtonElement>(null);
@@ -134,7 +136,7 @@ export const TransactionListItem: FC<TransactionListItemProps> = props => {
     txid: tx.tx_id,
     recipientAddress: getRecipientAddress(tx) || '',
     memo: memo || '',
-    date: txDate && txDate.toISOString(),
+    date: txDate instanceof Date ? txDate.toISOString() : '',
     txDetails: JSON.stringify(tx, null, 2),
     explorerLink: makeExplorerTxLink(tx.tx_id),
   });
@@ -163,12 +165,10 @@ export const TransactionListItem: FC<TransactionListItemProps> = props => {
         </Text>
         <Stack isInline spacing="tight">
           <Text textStyle="body.small" color={color('text-caption')}>
-            {getTxTypeName(
-              tx as any // TODO: fix in ui-utils
-            )}
+            {getTxTypeName(tx)}
           </Text>
           <Text textStyle="body.small" color={color('text-caption')}>
-            {txDateShort}
+            {inMicroblock ? 'In Microblock' : txDateShort}
           </Text>
         </Stack>
       </Box>
